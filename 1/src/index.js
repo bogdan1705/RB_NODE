@@ -1,18 +1,19 @@
-import http from 'node:http';
-import { routes } from './routes'
+import { parseCliArgs } from './utils/index.js';
+import habitRouter from './routes/index.js';
 
-const server = http.createServer((req, res) => {
-  const [ , resource, subResource ] = req.url.split('/');
+async function start() {
+  const args = process.argv.slice(2);
+  const { commandName, flags } = parseCliArgs(args);
 
-  const route = routes.find((route) => route.path === resource)
+    const command = habitRouter[commandName];
 
-  if (!route) {
-    res.writeHead(404).end('Not found');
-  }
+    if (!command) {
+      console.log(`Error: Command ${commandName} not found`);
+      process.exit(1);
+    }
 
-  route.controller(req, res, subResource || null);
-});
+    await command(flags);
 
-server.listen(3000, () => {
-  console.log('🚀  http://localhost:3000');
-});
+}
+
+start();

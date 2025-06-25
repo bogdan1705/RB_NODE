@@ -1,55 +1,35 @@
-import {
-  listUsers, getUser, addUser,
-  patchUser, deleteUser
-} from '../services/habit.service.js';
+import habitsService from '../services/habit.service.js';
 
-export async function handle(req, res, subResource) {
-  try {
-
-    const isIdSubResource = !Number.isNaN(+subResource);
-
-    const id = isIdSubResource ? id : null
-
-    if (req.method === 'GET' && id === null) {
-      return json(res, 200, await listUsers());
-    }
-    if (req.method === 'GET') {
-      const u = await getUser(id);
-      return u ? json(res, 200, u) : json(res, 404, { error: 'Not found' });
-    }
-    if (req.method === 'POST') {
-      const body = await bodyJSON(req);
-      return json(res, 201, await addUser(body));
-    }
-    if (req.method === 'PUT' && id === null) {
-      const body = await bodyJSON(req);
-      const u = await patchUser(id, body);
-      return u ? json(res, 200, u) : json(res, 404, { error: 'Not found' });
-    }
-    if (req.method === 'DELETE') {
-      const ok = await deleteUser(id);
-      return ok ? json(res, 204) : json(res, 404, { error: 'Not found' });
-    }
-    json(res, 405, { error: 'Method not allowed' });
-  } catch (e) {
-    json(res, 500, { error: e.message });
-  }
+export async function addHabit(body) {
+    const habit = await habitsService.add(body);
+    console.log(`Adding Habit: ${habit.id}`);
 }
 
-/* ---------- helpers ---------- */
-function json(res, status, data = null) {
-  res.writeHead(status, { 'Content-Type': 'application/json' });
-  if (data) res.end(JSON.stringify(data));
-  else res.end();
+export async function listHabits() {
+    const habits = await habitsService.getAll();
+    habitsService.showHabitTable(habits);
 }
 
-function bodyJSON(req) {
-  return new Promise((resolve, reject) => {
-    let raw = '';
-    req.on('data', (c) => (raw += c));
-    req.on('end', () => {
-      try   { resolve(JSON.parse(raw || '{}')); }
-      catch { reject(new Error('Invalid JSON')); }
-    });
-  });
+export async function getHabit(id) {
+    const habits = await habitsService.get(id);
+    console.log(habits);
+}
+
+export async function markDone(id) {
+    const habit = await habitsService.markDone(id);
+    console.log(`Mark Done: ${habit.id}`);
+}
+
+export async function updateHabit(id, body) {
+    const habit = await habitsService.update(id, body);
+    console.log(`Update habit: ${habit.id}`);
+}
+
+export async function showStats(period) {
+    await habitsService.showStats(period);
+}
+
+export async function deleteHabit(id) {
+    await habitsService.delete(id);
+    console.log(`Deleted Habit: ${id}`);
 }

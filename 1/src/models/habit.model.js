@@ -19,7 +19,7 @@ export async function getById(id) {
 
 export async function create(payload) {
   const db = await read();
-  const habit = { id: Date.now().toString(), ...payload };
+  const habit = { id: Date.now(), ...payload };
   await save([...db, habit]);
   return habit;
 }

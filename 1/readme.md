@@ -1,96 +1,77 @@
-```markdown
-# Minimal Node.js CRUD — Controller / Service / Model
+# Habit Tracker CLI
 
-> Чистий Node.js (без Express) + `database.json` у ролі бази даних  
-> Стек поділено на **Model → Service → Controller** для демонстрації шарової архітектури.
+## Installation
 
----
-
-## 📂 Структура проєкту
-
-```
-
-my-crud/
-├─ package.json              # "type": "module"
-├─ index.js                  # HTTP-вхід (маршрути)
-├─ controllers/
-│   └─ habit.controller.js   # HTTP-шар
-├─ services/
-│   └─ habit.service.js      # бізнес-логіка
-├─ models/
-│   └─ habit.model.js        # робота з файлом-БД
-└─ database.json             # спочатку \[]
-
-````
-
----
-
-## 🚀 Запуск
+1. Install dependencies:
 
 ```bash
-npm install        # немає залежностей, але створює lock-файл
-npm start          # node index.js
-# ⇒ сервер слухає http://localhost:3000
-````
-
----
-
-## 🔌 REST-ендпоїнти
-
-| Метод      | URL          | Тіло / параметри | Опис                     |
-| ---------- | ------------ | ---------------- | ------------------------ |
-| **GET**    | `/users`     | —                | Список усіх користувачів |
-| **GET**    | `/users/:id` | —                | Користувач за `id`       |
-| **POST**   | `/users`     | `{ "name":"" }`  | Створити                 |
-| **PATCH**  | `/users/:id` | часткові поля    | Оновити                  |
-| **DELETE** | `/users/:id` | —                | Видалити                 |
-
-### Приклади `curl`
-
-#### Створити
-```bash
-curl -X POST -H "Content-Type: application/json" \
-     -d '{"name":"Alice"}' http://localhost:3000/users
+  npm install
 ```
 
-#### Отримати всіх
+## Usage
+
+Run the application using:
+
 ```bash
-curl http://localhost:3000/users
+  node src/index.js [command] [options]
 ```
 
-#### Отримати одного
+### Available Commands
+
 ```bash
-curl http://localhost:3000/users/<id>
+  node src/index.js add --name "Run" --freq "daily"
 ```
 
-#### Оновити
 ```bash
-curl -X PATCH -H "Content-Type: application/json" \
-     -d '{"name":"Bob"}' http://localhost:3000/users/<id>
+  node src/index.js add --name "Read" --freq "weekly"
+  ```
+
+```bash
+  node src/index.js add --name "Work" --freq "monthly"
 ```
 
-#### Видалити
-```bash
-curl -X DELETE http://localhost:3000/users/<id>
+```bash  
+  node src/index.js list
 ```
 
----
+```bash 
+  node src/index.js markDone --id 1749653783005
+```
 
-## 🛠️ Деталі реалізації
+```bash  
+  node src/index.js update --id 1749653783005 --name "Run"
+ ```
 
-| Шар                             | Відповідальність                                                          |
-| ------------------------------- | ------------------------------------------------------------------------- |
-| **Model** (`models/`)           | Читає й пише `database.json` через `fs/promises`. Жодної бізнес-логіки.   |
-| **Service** (`services/`)       | Агрегує дані, перевіряє існування, формує об’єкти, **не** займається I/O. |
-| **Controller** (`controllers/`) | Парсить HTTP-запит, викликає сервіс, відправляє HTTP-статус/JSON.         |
-| **index.js**                    | Робить найпростішу маршрутизацію `"/users"` та `"/users/:id"`.            |
+```bash 
+  node src/index.js update --id 1749653783005 --freq "weekly"
+ ```
 
----
+```bash 
+  node src/index.js update --id 1749653783005 --name "Run" --freq "daily"
+ ```
 
-## 🤔 Навіщо так дрібнити?
+```bash 
+  node src/index.js delete --id 1749653783005
+ ```
 
-* **Тестованість:** бізнес-логіка (Service) ізольована від HTTP та файлової системи.
-* **Замінність «БД»:** достатньо переписати Model на Mongo / PostgreSQL — інші шари не змінюються.
-* **Прозорість:** у кожному шарі видно лише свою зону відповідальності.
+```bash 
+  node src/index.js stats --period 7
+ ```
 
----
+```bash 
+  node src/index.js stats --period 30
+```
+
+## Examples
+
+```bash
+  node src/index.js add --name "Read" --freq "daily"
+  node src/index.js add --name "Read" --freq "weekly"
+
+  node src/index.js list
+  node src/index.js done --id 1
+  node src/index.js stats --period 7
+```
+## Environment variables
+
+DATE_OFFSET - for offset current date
