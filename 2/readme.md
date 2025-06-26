@@ -1,57 +1,35 @@
-```markdown
-# Minimal Node.js CRUD — Controller / Service / Model
-
-> Чистий Node.js (без Express) + `database.json` у ролі бази даних  
-> Стек поділено на **Model → Service → Controller** для демонстрації шарової архітектури.
-
----
-
-## 📂 Структура проєкту
-
-```
-
-my-crud/
-├─ package.json              # "type": "module"
-├─ index.js                  # HTTP-вхід (маршрути)
-├─ controllers/
-│   └─ users.controller.js   # HTTP-шар
-├─ services/
-│   └─ users.service.js      # бізнес-логіка
-├─ models/
-│   └─ users.model.js        # робота з файлом-БД
-└─ database.json             # спочатку \[]
-
+### Start
 ``` bash
- npm start          # node index.js
+npm start
 ````
 
 
-#### Створити
+#### Create
 ```bash
 curl.exe -X POST -d '{"name":"Alice"}' http://localhost:3000/rest/users
 ```
 
-#### Отримати всіх
+#### get all
 ```bash
 curl http://localhost:3000/rest/users
 ```
 
-#### Отримати одного
+#### get by id
 ```bash
 curl http://localhost:3000/rest/users/<id>
 ```
 
-#### Оновити
+#### update
 ```bash
 curl -X POST -d '{"name":"Bob"}' http://localhost:3000/rest/users/<id>
 ```
 
-#### Видалити
+#### delete
 ```bash
 curl -X DELETE http://localhost:3000/rest/users/<id>
 ```
 
-#### Отримати каунт
+#### get count
 ```bash
 curl http://localhost:3000/rest/users/count
 ```
